@@ -1,0 +1,37 @@
+Simple cDOM conversion done by Worlock and Dregs.  100% credit remains with the original author MoxNix.  Original DM map readme below
+
+===========================================================================
+
+Title                   : Malevolence 2004
+
+Gametype		: UT2004 Deathmatch
+
+Version                 : 1.0 (release version)
+
+Release Date            : 20 Aug 2004
+
+Filename                : DM-Malevolence2004.zip
+
+Author                  : Rod 'MoxNix' Schnell
+
+Web Page                : http://www.damclan.com
+
+Description             : A small, fast paced map indoor map that's well
+                          suited for both 1v1 and FFA.
+
+Other levels by author  : DM-Eliminator (original ut2003 map)
+
+
+===========================================================================
+
+
+
+Credits: - Rich 'Akuma' Eastwood: author of the original DM-Malevolence for
+                                  UT, the layout this map is based upon.
+         - Beta testers         : DAM, SBD and HTM clans and atari forum
+                                  members.
+
+This file may not be uploaded to any review site that rates remakes based
+on different criteria than original maps. It may be uploaded or mirrored 
+elsewhere so long as the complete archive (including this text file) 
+remains intact.

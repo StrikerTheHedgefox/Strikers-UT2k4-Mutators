@@ -1,0 +1,97 @@
+=============================================================================
+Unreal Tournament 2004   --  Classic Domination --  Cryptic
+=============================================================================
+
+Title             : DMP-Cryptic
+Version           : 1
+Release Date      : Saturday, October 16th, 2004
+Filename          : cDOM-DMP-Cryptic.ut2
+Author            : Carson "Dregs" Smith
+Website:          : www.cdom.net
+Email Address     : dregs@cdom.net
+Age               : cough*47*cough
+Other Levels      : (UT2003)CTF-Khunum, (UT2003)CTF-SpilltheBlood
+
+================================================================
+
+--- Play Information ---
+Game                  : Unreal Tournament 2004 - Classic DOmination
+Level Name            : DMP-Cryptic
+Single Player         : Botmatch
+GameType              : cDOM
+New Sounds            : Yes
+New UScript           : No
+New Textures          : Yes
+New Static Meshes     : Yes 
+Known bugs            : None to my knowledge
+
+--- Construction ---
+Editor(s) used        : UnrealEd 3.0, 3D Studio Max 5.1, Photoshop 7.0, PSP 8.10 w/ FlamingPear Plugins
+Base                  : Cryptic by Alan 'Talisman' Willard
+Construction Time     : About 120 manhours total - August-October 2004
+ 
+Installation
+------------
+Just unzip cDOM-DMP-Cryptic.ut2 into your UT2004/Maps folder & the Emigma.ogg to the UT2004/Music folder
+
+Author's Notes
+--------------
+
+A very big thankyou to Sjosz & R.H.<=BunnySlayer=> for their persistent downloading & playtesting of the
+betas, Caldazar and MsM for final beta testing and comments, Alan 'Talisman' Willard for the original UT99
+version of this map & the cDOM code team (Worlock, Snake, CaptainKewl).
+
+Changes Made from UT99 to UT2004
+--------------------------------
+Enhanced particle Fx, new sounds, no UT99 textures reused, new textures, 'New lava'a la UT2004, new outdoor
+environment, adrenaline added, health vials added, bot paths & weapon ammo tweaked w/new jumpspots, use of 
+standard weapon bases (some with minor texture changes), and a few new static meshes.
+
+Level Comments
+--------------
+My aim was to replicate as much as possible of the original Cryptic.  Since UT99 textures were 8-bit and
+quite small, there reuse was not practical, so new textures were either made from scratch or replaced
+with UT2004 "stock" textures that were similar.  Since brush porting of UT99 to UT2004 isn't the cleanest
+in the world, meshes had to be used in specific areas as needed to elimnate HOMs. The lower corridor was
+embelished a bit on my part and left the orignal just a bit as this section became my creative output.
+
+Texture Credits
+---------------
+Mtl_trim01bm, 03, 03a: Kevin 'Rorshach' Johnstone http://www.quakefiles.com/rorshach/
+Skybox: ONS-Dawn - Sjoerd 'Hourences' De Jong
+
+
+Copyright / Permissions
+-----------------------
+Copyrighted 2004 to Carson "Dregs" Smith
+
+Authors may NOT use this level as a base to build additional levels without explicit
+permission from the Original Author.
+
+Authors may NOT use the Static Meshes or Textures from this map without explicit 
+permission from the Original Author.
+
+You are NOT allowed to commercially exploit this level, without my explicit permission!
+
+You MAY distribute this level through any electronic network (internet (web/ftp),
+FIDO, local BBS, Magazine, etc.), provided you include this file and leave the archive intact.
+
+UNREAL (c)1998 Epic Megagames, Inc. All Rights Reserved. Distributed by GT
+Interactive Software, Inc. under license. UNREAL and the UNREAL logo are registered
+trademarks of Epic Megagames, Inc. All other trademarks and trade names are
+properties of their respective owners.
+
+UNREAL TOURNAMENT (c)1999 Epic Megagames, Inc. All Rights Reserved. Distributed by
+GT Interactive Software, Inc. under license. UNREAL TOURNAMENT and the UNREAL
+TOURNAMENT logo are registered trademarks of Epic Megagames, Inc. All other
+trademarks and trade names are properties of their respective owners.
+
+UNREAL TOURNAMENT 2003 (c)2002 Epic Games, Inc. All Rights Reserved. Distributed by
+GT Interactive Software, Inc. under license. UNREAL TOURNAMENT 2003 and the UNREAL
+TOURNAMENT 2003 logo are registered trademarks of Epic Games, Inc. All other
+trademarks and trade names are properties of their respective owners.
+
+UNREAL TOURNAMENT 2004 (c)2004 Epic Games, Inc. All Rights Reserved. Distributed by
+GT Interactive Software, Inc. under license. UNREAL TOURNAMENT 2004 and the UNREAL
+TOURNAMENT 2004 logo are registered trademarks of Epic Games, Inc. All other
+trademarks and trade names are properties of their respective owners.
