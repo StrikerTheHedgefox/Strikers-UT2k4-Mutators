@@ -36,6 +36,10 @@ function Tick(float DeltaTime)
         PID = C.PlayerReplicationInfo.PlayerID;
         if (Stats.Length <= PID)
 			Stats.Length = PID + 1;
+		
+		// Prevent chaining double-tap and single-tap to work around the cooldown.
+		if(PlayerController(C).DoubleClickDir == DCLICK_Active)
+			Stats[PID].bWaitingForLand = true;
 
         if (Stats[PID].bWaitingForLand)
         {
@@ -104,7 +108,7 @@ function Mutate(string MutateString, PlayerController Sender)
 defaultproperties
 {
 	bAddToServerPackages=True
-    PostLandCooldown=0.35
+    PostLandCooldown=0.5
     GroupName="SingleDodge"
     FriendlyName="Single Tap Dodge"
 }

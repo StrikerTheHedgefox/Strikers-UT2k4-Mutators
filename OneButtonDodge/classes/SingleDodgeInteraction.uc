@@ -48,6 +48,10 @@ function Tick(float DeltaTime)
 	
     PC = ViewportOwner.Actor;
 	
+	// Prevent chaining double-tap and single-tap to work around the cooldown.
+	if(PC.DoubleClickDir == DCLICK_Active)
+		bWaitingForLand = true;
+	
 	if (bWaitingForLand && PC.Pawn.Physics == PHYS_Walking)
     {
 		bWaitingForLand = false;
