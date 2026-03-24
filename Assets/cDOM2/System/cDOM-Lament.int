@@ -1,0 +1,45 @@
+[ControlPoint0]
+PointName="Lower"
+ObjectiveName="Lower Control Point"
+
+[ControlPoint1]
+PointName="Upper"
+ObjectiveName="Upper Control Point"
+
+[ControlPoint2]
+PointName="Mid"
+ObjectiveName="Mid Control Point"
+
+[LevelInfo0]
+Title="Lament"
+LevelEnterText="Control it all!"
+
+[LevelSummary]
+Title="Lament"
+Description="(cDOM2) Its up close, in your face action at Lament! Based from the UT99 original by Alan 'Talisman' Willard"
+LevelEnterText="Control it all!"
+
+[ZoneInfo0]
+LocationName="Flak Room Stairs"
+
+[ZoneInfo1]
+LocationName="Ramp"
+
+[ZoneInfo12]
+LocationName="Main Area"
+
+[ZoneInfo13]
+LocationName="Lower"
+
+[ZoneInfo16]
+LocationName="Hallway"
+
+[ZoneInfo17]
+LocationName="Mid"
+
+[ZoneInfo18]
+LocationName="Ramp to Mid"
+
+[ZoneInfo7]
+LocationName="Flak Room"
+

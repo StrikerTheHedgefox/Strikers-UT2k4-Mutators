@@ -1,0 +1,31 @@
+[BetterDesertBulldog]
+VehicleNameString="Vehicle"
+
+[ControlPoint0]
+PointName="Center"
+ObjectiveName="Control Point Center"
+
+[ControlPoint1]
+PointName="North"
+ObjectiveName="Control Point North"
+
+[ControlPoint2]
+PointName="South"
+ObjectiveName="Control Point South"
+
+[LevelInfo0]
+Title="Desert Combat"
+
+[LevelSummary]
+Title="Desert Combat"
+Description="(VDOM2) Blazing sun, sand everywhere and no water for miles around, welcome to the deserts of North Africa..."
+
+[SnipingVolume0]
+LocationName="South"
+
+[SnipingVolume1]
+LocationName="North"
+
+[ZoneInfo0]
+LocationName="The Desert"
+

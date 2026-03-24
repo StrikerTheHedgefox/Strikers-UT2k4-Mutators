@@ -1,0 +1,37 @@
+[BootsOfJumping]
+ExpireMessage="The jump boots have run out."
+ItemName="Jump Boots"
+
+[BootsOfJumpingPickup]
+PickupMessage="You got the jump boots."
+
+[ControlPoint0]
+PointName="Rooftop"
+ObjectiveName="Control Point Roof"
+
+[ControlPoint1]
+PointName="Arturo's"
+ObjectiveName="Control Point Arturo"
+
+[ControlPoint2]
+PointName="Garage"
+ObjectiveName="Control Point Garage"
+
+[LevelInfo0]
+Title="Condemned"
+LevelEnterText="Dominate the competition!"
+
+[LevelSummary]
+Title="Condemned"
+Description="(cDOM2) The many gang-related fights that ravaged this particular area have already proven this section of the city slums to be a bloody battle ground. The Liandri organizers are expecting this to be the case once again, only this time, as a tournament domination arena."
+LevelEnterText="Dominate the competition!"
+
+[ZoneInfo0]
+LocationName="alley"
+
+[ZoneInfo1]
+LocationName="the condemned building"
+
+[cDOM_MessageTextureClient0]
+ScrollingMessage="TONIGHT 10:00PM EST... %lp LEADS %h UNDEFEATED TEAM INTO THE CONDEMNED ARENA"
+

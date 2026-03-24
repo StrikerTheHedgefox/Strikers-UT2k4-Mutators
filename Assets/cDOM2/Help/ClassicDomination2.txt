@@ -1,0 +1,342 @@
+==================================================================================
+
+           Classic Domination© 2
+ 
+==================================================================================
+
+Version         : 2.0.9
+Date            : April 25, 2005
+Developed by    : Brian "Snake.PLiSKiN" Alexander ( sw_snakepliskin@hotmail.com )
+                  Based off the works of Jason "Captain Kewl" Yu and Epic Games
+Special Thanks  : Worlock, Carson "Dregs" Smith, 2L, sh0k, Spectre_I, and Jalis.
+Web Site        : http://cdom2.provinggrounds.com
+
+
+
+==================================================================================
+ 1. Details
+==================================================================================
+
+The original Domination game type from the (UT99) Unreal Tournament: Game of The 
+Year edition is back for Unreal Tournament 2004.  This is the real Domination game 
+type, every thing is the same as the original, down to the unlimited use of the 
+translocator!  Also included is the new game type of Vehicle Domination.  
+Domination with the use of Vehicles! 
+
+This upgrade of Classic Domination includes new support for Double Domination maps, 
+by default list Classic Domination internet servers in the Double Domination 
+servers list. Fixed the bugs and yields better performance then the prior version 
+of Classic Domination.  The BotAI has had a major overhaul.
+
+
+
+==================================================================================
+ 2. System Requirements
+==================================================================================
+
+Minimum Requirements
+----------------------
+Unreal Tournament 2004
+
+
+Recommended Requirements
+------------------------
+Unreal Tournament 2004 with Patch 3355 or higher and the Editors Choice Edition 
+Bonus Pack.
+
+
+Compatible with AntiTCC 1.18c, UT Comp 1.6, and OLStats 3.01.
+
+
+
+==================================================================================
+ 3. Dedicated Network Servers
+==================================================================================
+
+3.1 Recommended Install Method
+------------------------------
+Add the cDOM2 package to your servers UT2004.ini file as shown below
+
+[Engine.GameEngine]
+ServerPackages=cDOM2
+
+While adding the package to your servers ServerPackages list is not required 
+because if it is not in the list, the mod will add itself (a new feature of 
+UT2004). 
+
+
+3.2 Auto-Add Method
+-------------------
+If the auto-add method is used, it is recommended that you change/add to the 
+command line used to start the server, by changing the default game type of the 
+server to cDOM2.cDOM2Game. The base command should look something like this:
+
+ UCC SERVER cDOM-Malevolence2004?game=cDOM2.cDOM2Game -log=server.log
+
+
+
+==================================================================================
+ 4. CDOM2 Settings
+==================================================================================
+
+UT2004.ini settings:
+--------------------------------------------------------------
+[Group Name]
+Property=Default Value          Property Information
+--------------------------------------------------------------
+
+
+[cDOM2.cDOM2Game]
+bUnlimitedTranslocator=True     Allow the Translocator to be Unlimited
+bAwardAdrenaline=True           Award the player with one adrenaline for each, 
+                                one point they earn their team.
+bDeviousBots=False              True = bot should use guile in hunting opponent 
+                                (More expensive). 
+bClassicTeamSymbols=True        Use the UT99 team symbols on the HUD to match the 
+                                control points instead of UT2k4's new team symbols.
+bAdvertiseDDOM=True             Advertises the Server in the xDoubleDom servers 
+                                in addition to the Classic Domination servers.
+bAddCDOM2ServerName=True        Adds [cDOM] to the beginning of the Servers Name.
+bDebugMode=False                Dumps out extra debugging info to the system log.
+bExtraStatsLogging=False        When false, make 100% compatible stat log files.
+                                If true, log extra info that may not be compatible
+                                with the master server or other 3rd party stat systems.
+
+
+
+[cDOM2.cDOM_DomPoint]
+DomMeshClassName="cDOM2.ControlPointMesh"   The string Class name of the 'DomMeshClass'
+bUseDomRing=False               Show the xDomRing
+bHiddenDomBase=False            Hides the DomPointBase or allows for a custom
+                                StaticMesh to be used.
+HiddenDomBaseMesh=StaticMesh'CDOM-GameMeshes.DOMpoint.BaseHidden'     The staticmesh 
+                                used if bHiddenDomBase=True
+DomMeshShader(5)=               Array of 5 materials that could be used as the
+                                DomMeshes skins. 0=Red, 1=Blue, 2=Green, 3=Gold,
+                                4=Neutral
+
+
+
+[cDOM2.ControlPoint]             
+bLightCone=False                Display Light Cone for clients who have the 'World 
+                                Detail' set greater then Low.
+ControlPointMeshes(0)=StaticMesh'CDOM-GameMeshes.ControlPoint.DomRed'
+ControlPointMeshes(1)=StaticMesh'CDOM-GameMeshes.ControlPoint.DomBlue'
+ControlPointMeshes(2)=StaticMesh'CDOM-GameMeshes.ControlPoint.DomGreen'
+ControlPointMeshes(3)=StaticMesh'CDOM-GameMeshes.ControlPoint.DomGold'
+ControlPointMeshes(4)=StaticMesh'CDOM-GameMeshes.ControlPoint.DomNeutral'
+
+
+
+[ClassicDom.ClassicControlPoint]           These are so the existing cDOM maps 
+                                           will use the new skins.
+NeutralShader=Shader'CDOMGameTextures.Shaders.S_Vertex_Neutral'
+RedTeamShader=Shader'CDOMGameTextures.Shaders.S_Vertex_Red'
+BlueTeamShader=Shader'CDOMGameTextures.Shaders.S_Vertex_Blue'
+GreenTeamShader=Shader'CDOMGameTextures.Shaders.S_Vertex_Green'
+GoldTeamShader=Shader'CDOMGameTextures.Shaders.S_Vertex_Gold'
+
+
+[cDOM2.VDOM2Game]
+bTeamLockedVehicles=False       (true) Are vehicles locked for teams or 
+                                (false) free for anyone (Default=False)
+
+
+
+==================================================================================
+ 5. Creating Classic Domination 2 Maps (For both 2 and 4 teams)
+==================================================================================
+
+5.1 Pre-Setup
+---------
+The following is not required, yet recommended to make life easier on the mapper. 
+Adding the cDOM2 package to the EditPackages list in your UT2004.ini file.  This is
+so that the required packages and actors will automatically be loaded when you start 
+up Unreal Editor.  To enable this, manually add the cDOM2 package to the list, by 
+adding the following line in your UT2004.ini:
+
+[Editor.EditorEngine]
+EditPackages=cDOM2
+
+
+5.2 Making a cDOM2 Map
+---------------------
+In Unreal Editor 3, begin to create your map.  You will want to use cDOM's version 
+of "ControlPoint" for each of the maps Control Points.  These can be found in 
+Actor Browser by following this path (with Use 'Actor' as Parent checked):
+
+ Actor->
+  NavigationPoint->
+   JumpDest->
+    JumpSpot->
+     GameObjective->
+      DominationPoint->
+       xDomPoint->
+        cDOM_DomPoint->
+         ControlPoint
+
+Note: If ControlPoint is not listed, then you will need to open the cDOM2
+package.
+
+Place the "ControlPoint" actor in the map for each Control Point.  Then there
+are some properties that you should be aware of.  In UnrealEd's Actor Properties
+for ControlPoint:
+--------------------------------------------------------------
+[Group Name]
+Property=Default Value          Property Information
+--------------------------------------------------------------
+
+[xDomPoint]
+ControlEvent=cDOM_Monitor       Set this to match the monitors tags (e.g. if using a 
+                                cDOM_MonitorA actor that has the tag of cMonitorA,
+                                set the ControlPoint's ControlEvent to the cMonitorA)
+PointName=Position              The name displayed on the HUD for this Control Point.
+
+
+[GameObjective]                 (Most of the properties in GameObjective should not
+                                be changed.  Doing so could cause unknown problems.)
+DefensePriority=0               The higher the number, the higher the priority for  
+                                bots to want to defend.
+DefenseScriptTags=None          Match this to the desired UnrealScriptedSequence tag
+                                Then bots will use that UnrealScriptedSequence as a 
+                                spot where they should stand at when defending this 
+                                control point.
+ObjectiveName=Control Point x   This property should be given a unique name.
+
+
+[cDOM_DomPoint]
+bHiddenDomBase=False            Hides the DomPointBase or allows for a custom
+                                StaticMesh to be used.
+bLightCone=False                Display Light Cone for clients who have the 'World 
+                                Detail' set greater then Low.
+bUseDomRing=False               Show the xDomRing.
+
+
+For cDOM_Monitor's
+[cDOM_Monitor]
+bCameraMonitor=False            Set this to true only if Monitor is going to be a Camera
+                                Monitor (as used in cDOM-DMP-Lament).
+CameraMonitorTexture=           The ScriptedTexture used if this Monitor is a 
+                                Camera Monitor.
+
+
+
+The two most import properties that should be set is xDomPoint.PointName
+and GameObjective.ObjectiveName.
+
+Finally set the default game type for the map By going to the menu / View / 
+Level Properties, then set LevelInfo.DefaultGameType to:
+
+ cDOM2.cDOM2Game
+
+or for a vehicle Domination map:
+
+ cDOM2.VDOM2Game
+
+
+5.3 Notes
+---------
+
+When making maps for 2 or 4 team Classic Domination, always set the 
+LevelInfo.DefaultGameType to cDOM2.cDOM2Game or cDOM2.VDOM2Game .
+ControlPoint does have the methods already built-in for 4 team support.
+
+
+
+==================================================================================
+ 6. Uninstalling cDOM2
+==================================================================================
+
+Use the Uninstall.exe program located in your \UT2004\cDOM2\ folder.
+
+
+
+==================================================================================
+ 7. Troubleshooting
+==================================================================================
+
+7.1 Known Issues
+----------------
+* The maps that were initially released had texture corruption in the maps. This    
+  has been fixed in this release.
+* Network clients that have not yet updated or network clients that has updated,
+  will download the servers version of a map, even though they already have a map
+  by the same name. This is because of in the 2.0.9 version of cDOM2, the texture
+  corruption in the maps from the 2.0.8 was fixed and both versions of the maps use
+  the same name.
+* Servers that are using NAT and/or possibly a firewall, may list the current map
+  being played in the server browser with having an extra prefix of "DOM-". This 
+  can be fixed by opening the necessary ports UT requires and/or stop using the
+  NAT with the server.
+
+
+
+==================================================================================
+ 8. Partial Change Log for cDOM2
+==================================================================================
+
+Version 2.0.9
+ -New cDOM map: 1on1 Condemned.
+ -Fixed use of new control point meshes being used in existing maps.
+ -Fixed Texture corruptions in maps.
+ -Fixed online use of cDOM_Monitors.
+ -Added new Server Info that displays the server’s version of cDOM that’s being 
+  played.
+ -cDOM2.u and ClassicDom.u packages are backwards compatible. (Clients and servers 
+  can be using different versions of those packages without getting Package 
+  "Version Mismatch" errors.
+
+Version 2.0.8
+ -3 New cDOM maps Condemned, Cinder Foundry, and Lament
+ -1 VDOM map: Desert-CombatV2
+ -Performance increase, due to better code optimization.
+ -Corrected texturing of the control point Static Meshes.
+ -Control Point static meshes now use vertex blending.
+ -cDOM2 is compatible with the existing cDOM maps.
+ -cDOM2 is compatible with the existing DOM (Double Domination) maps.
+ -cDOM2 servers now by default are listed under Double Domination servers.
+ -[cDOM] is added to the beginning of servers names by default.
+ -Corrected the team symbol displayed on the HUD to match the control points 
+  controlling team.
+ -Added LightCone to Control Points.
+ -Prevent use of the unlimited translocator mutator in cDOM games. Seen as its 
+  already being used.
+ -Added new Server Info that displays the game type being played, i.e. cDOM
+ -Removed the Announcer.
+ -Enhanced Bot AI.
+ -Removed HatTrick announcement.
+ -Add new stat to the Stats ScoreBoard (for cDOM2 maps only).
+ -Fixed, the Bot AI to handle more then 2 control points.
+ -Added option to use Devious Bots.
+ -Fixed Lighting issue of the light from control points being displayed though 
+  BSP's.
+ -Increased the Default Collision Radius of control points.
+ -Fixed/Added support for xDOMMonitor's and other event-triggered actors.
+ -Created new cDOM_Monitor class.
+ -Removed the option "Classic Control Points".
+ -Added cDOM.xml for voice support.
+ -Better security to prevent cheats.
+ -New console command "MUTATE CDOMINFO" shows all the cDOM settings for the 
+  current match.
+
+
+
+================================================================================
+ Copyright Notice
+================================================================================
+
+cDOM2 ©2005
+
+Classic Domination is a trademark of the Domination Map Pack.  
+©2004 ALL RIGHTS RESERVED.
+
+Classic Domination 2, cDOM2, VDOM, VDOM2 and Vehicle 
+Domination are trademarks of Brian "Snake.PLiSKiN" Alexander.  
+©2005  ALL RIGHTS RESERVED.
+
+Unreal® Tournament 2003 ©2004 Epic Games, Inc. Raleigh, N.C. USA. 
+
+Unreal and the Unreal logo are registered trademarks of Epic Games, Inc. 
+ALL RIGHTS RESERVED. 
+
+All other trademarks and trade names are the property of their respective owners. 

@@ -1,0 +1,82 @@
+[ControlPoint0]
+PointName="Nook"
+ObjectiveName="ClassicDomPoint2Nook"
+
+[ControlPoint3]
+PointName="Lava"
+ObjectiveName="ClassicDomPoint0Lava"
+
+[ControlPoint4]
+PointName="Top"
+ObjectiveName="ClassicDomPoint1Top"
+
+[LevelInfo0]
+Title="Cinder Foundry"
+
+[LevelSummary]
+Title="Cinder Foundry"
+Description="(cDOM2) After dozens of brokens legs and incinerated employees, the Cinder Foundry was finally shut down and placed upon the auction block, where it was snatched up by a savvy Liandri location scout."
+
+[Trigger0]
+Message="The Spider Room Door Opened!"
+
+[Trigger2]
+Message="The Spider Room Opened!"
+
+[ZoneInfo1]
+LocationName="Nook Boxes"
+
+[ZoneInfo10]
+LocationName="Back Hall"
+
+[ZoneInfo12]
+LocationName="Lava Shock Room"
+
+[ZoneInfo14]
+LocationName="Top of Tall Lift"
+
+[ZoneInfo16]
+LocationName="Main Area (North Side)"
+
+[ZoneInfo18]
+LocationName="Nook"
+
+[ZoneInfo19]
+LocationName="Top"
+
+[ZoneInfo20]
+LocationName="Lava"
+
+[ZoneInfo21]
+LocationName="South Side"
+
+[ZoneInfo23]
+LocationName="Nook Hall"
+
+[ZoneInfo24]
+LocationName="Pulse Hallway"
+
+[ZoneInfo25]
+LocationName="Outdoors"
+
+[ZoneInfo3]
+LocationName="Tall Lift"
+
+[ZoneInfo4]
+LocationName="Main Area"
+
+[ZoneInfo5]
+LocationName="Rocket Launcher Room"
+
+[ZoneInfo6]
+LocationName="Lower Sniper Room"
+
+[ZoneInfo7]
+LocationName="Goo Room"
+
+[ZoneInfo8]
+LocationName="Pulse Room"
+
+[ZoneInfo9]
+LocationName="Top, Amp Side"
+
