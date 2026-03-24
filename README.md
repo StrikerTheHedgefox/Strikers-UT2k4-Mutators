@@ -9,3 +9,5 @@ They are as follows:
 * ***ServerLogo4b_SM*** - A widescreen-friendly version of Wormbo's ServerLogo4a.
 * ***SMHitMarkers*** - CoD/Apex Legends-style hitmarkers.
 * ***SMPackageManager*** - A mutator and serverpackage manager meant to be a replacement to UT2Vote's package and mutator management. Sets default-loaded mutators, and what serverpackages to add to the package list based on what's currently loaded. Must be added as a ServerActor.
+* ***cDOM2*** - Brian "Snake.PLiSKiN" Alexander's Classic Domination 2 mod, fixed up for OldUnreal UT2004 3374p9.
+* ***ClassicDom*** - A heavily cut-down dependency for cDOM2.
