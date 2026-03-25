@@ -11,6 +11,37 @@ var protected array<EPointInfo> Points;
 var() SpriteWidget ConSymbols[2];
 var() SpriteWidget NeutralSymbol;
 
+// From 3374.
+function Draw2DLocationDot2(
+	Canvas C,
+	vector Loc,
+	float PosX, float PosY, // [0..1] // screen relative position of the center
+	float OffsetX, float OffsetY, // Absolute offset from PosX/Y in units of a virtual 640x480 screen
+	float Radius, // Absolute radius on a virtual 640x480 screen
+	float DotScale) 
+{
+	local rotator Dir;
+	local float Angle, Scaling;
+	local Actor Start;
+
+	if ( PawnOwner == None )
+		Start = PlayerOwner;
+	else
+		Start = PawnOwner;
+
+	Dir = rotator(Loc - Start.Location);
+	Angle = ((Dir.Yaw - PlayerOwner.Rotation.Yaw) & 65535) * 6.2831853/65536;
+	Scaling = 24*C.ClipX*DotScale/1600;
+
+	C.Style = ERenderStyle.STY_Alpha;
+	C.SetPos(
+		PosX*C.ClipX + OffsetX*ResScaleX + Radius*ResScaleX*Sin(Angle) - Scaling*0.5,
+		PosY*C.ClipY + OffsetY*ResScaleX - Radius*ResScaleY*Cos(Angle) - Scaling*0.5
+	);
+
+	C.DrawTile(LocationDot, Scaling, Scaling,340,432,78,78);
+}
+
 simulated function PostBeginPlay()
 {
 	local int h, i;
