@@ -54,7 +54,8 @@ function Tick(float DeltaTime)
 
 static function bool AttemptDodge(Pawn P, Controller C)
 {
-    local vector X, Y, Z, DodgeDir, DirCross;
+    local vector X, Y, Z, DodgeDir, DirCross, TraceStart, TraceEnd, HitLocation, HitNormal;
+	local Actor HitActor;
     local float FDot, SDot;
     local eDoubleClickDir ClickDir;
 
@@ -64,7 +65,15 @@ static function bool AttemptDodge(Pawn P, Controller C)
 
     if (P.Physics == PHYS_Falling)
     {
-        if (P.Trace(X, Y, P.Location - (Normal(P.Acceleration) * 64), P.Location, true) == None) 
+		if(!P.bCanWallDodge)
+			return false;
+						
+		TraceStart = P.Location - P.CollisionHeight*Vect(0,0,1);
+		TraceEnd = TraceStart - Normal(P.Acceleration)*(32.0 + P.CollisionRadius);
+		
+		HitActor = P.Trace(HitLocation, HitNormal, TraceEnd, TraceStart, false, vect(1,1,1));
+		
+        if (HitActor == None || (!HitActor.bWorldGeometry && (Mover(HitActor) == None))) 
             return false;
     }
 
