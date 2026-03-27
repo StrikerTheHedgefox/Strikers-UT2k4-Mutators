@@ -1,12 +1,5 @@
 class MutSingleTapDodge extends Mutator;
 
-struct PlayerStatus {
-    var float LandTime;
-    var bool bWaitingForLand;
-};
-
-var array<PlayerStatus> Stats;
-var config float PostLandCooldown;
 var bool bHasInteraction;
 
 function PostBeginPlay()
@@ -25,46 +18,37 @@ function PostBeginPlay()
 
 function Tick(float DeltaTime)
 {
-    local Controller C;
-    local int PID;
+	/*
+	local Controller C;
+	local int PID;
 
-    for (C = Level.ControllerList; C != None; C = C.NextController)
-    {
-        if (C.Pawn == None || PlayerController(C) == None)
+	for (C = Level.ControllerList; C != None; C = C.NextController)
+	{
+		if (C.Pawn == None || PlayerController(C) == None)
 			continue;
-		
-        PID = C.PlayerReplicationInfo.PlayerID;
-        if (Stats.Length <= PID)
-			Stats.Length = PID + 1;
-		
-		// Prevent chaining double-tap and single-tap to work around the cooldown.
-		if(PlayerController(C).DoubleClickDir == DCLICK_Active)
-			Stats[PID].bWaitingForLand = true;
-
-        if (Stats[PID].bWaitingForLand)
-        {
-            if (C.Pawn.Physics == PHYS_Walking)
-            {	
-                Stats[PID].bWaitingForLand = false;
-                Stats[PID].LandTime = Level.TimeSeconds;
-            }
-        }
-    }
+	}
+	*/
 }
 
 static function bool AttemptDodge(Pawn P, Controller C)
 {
-    local vector X, Y, Z, DodgeDir, DirCross, TraceStart, TraceEnd, HitLocation, HitNormal;
+	local vector X, Y, Z, DodgeDir, DirCross, TraceStart, TraceEnd, HitLocation, HitNormal;
 	local Actor HitActor;
-    local float FDot, SDot;
-    local eDoubleClickDir ClickDir;
+	local float FDot, SDot;
+	local eDoubleClickDir ClickDir;
+	local bool DidDodge;
 
-    if (P == None || C == None) return false;
-    if (P.Physics != PHYS_Walking && P.Physics != PHYS_Falling) return false;
-    if (VSize(P.Acceleration) < 0.1) return false;
+	if (P == None || C == None)
+		return false;
+	
+	if (P.bIsCrouched || P.bWantsToCrouch || (P.Physics != PHYS_Walking && P.Physics != PHYS_Falling))
+		return false;
+	
+	if (VSize(P.Acceleration) < 0.1)
+		return false;
 
-    if (P.Physics == PHYS_Falling)
-    {
+	if (P.Physics == PHYS_Falling)
+	{
 		if(!P.bCanWallDodge)
 			return false;
 						
@@ -73,51 +57,45 @@ static function bool AttemptDodge(Pawn P, Controller C)
 		
 		HitActor = P.Trace(HitLocation, HitNormal, TraceEnd, TraceStart, false, vect(1,1,1));
 		
-        if (HitActor == None || (!HitActor.bWorldGeometry && (Mover(HitActor) == None))) 
-            return false;
-    }
+		if (HitActor == None || (!HitActor.bWorldGeometry && (Mover(HitActor) == None))) 
+			return false;
+	}
 
-    C.GetAxes(P.Rotation, X, Y, Z);
-    FDot = Normal(P.Acceleration) Dot X;
-    SDot = Normal(P.Acceleration) Dot Y;
-    DodgeDir = Normal(X * FDot + Y * SDot);
+	C.GetAxes(P.Rotation, X, Y, Z);
+	FDot = Normal(P.Acceleration) Dot X;
+	SDot = Normal(P.Acceleration) Dot Y;
+	DodgeDir = Normal(X * FDot + Y * SDot);
 
-    if (Abs(FDot) > Abs(SDot)) {
-        if (FDot > 0) ClickDir = DCLICK_Forward; else ClickDir = DCLICK_Back;
-        DirCross = DodgeDir Cross Y;
-    } else {
-        if (SDot > 0) ClickDir = DCLICK_Right; else ClickDir = DCLICK_Left;
-        DirCross = DodgeDir Cross X;
-    }
+	if (Abs(FDot) > Abs(SDot)) {
+		if (FDot > 0) ClickDir = DCLICK_Forward; else ClickDir = DCLICK_Back;
+		DirCross = DodgeDir Cross Y;
+	} else {
+		if (SDot > 0) ClickDir = DCLICK_Right; else ClickDir = DCLICK_Left;
+		DirCross = DodgeDir Cross X;
+	}
 
-    return xPawn(P).PerformDodge(ClickDir, DodgeDir, DirCross);
+	DidDodge = xPawn(P).PerformDodge(ClickDir, DodgeDir, DirCross);
+	if(DidDodge)
+		PlayerController(C).DoubleClickDir = DCLICK_Active;
+	
+	return DidDodge; 
 }
 
 function Mutate(string MutateString, PlayerController Sender)
 {
-    local int PID;
-    if (MutateString ~= "dodge" && Sender != None && Sender.Pawn != None)
-    {
-        PID = Sender.PlayerReplicationInfo.PlayerID;
-        if (Stats.Length <= PID) Stats.Length = PID + 1;
-
-        if (Stats[PID].bWaitingForLand)
-			return;
-        if (Level.TimeSeconds - Stats[PID].LandTime < PostLandCooldown)
+	if (MutateString ~= "dodge" && Sender != None && Sender.Pawn != None)
+	{
+		if (Sender.DoubleClickDir == DCLICK_Active || Sender.DoubleClickDir == DCLICK_Done)
 			return;
 
-        if (static.AttemptDodge(Sender.Pawn, Sender))
-        {
-            Stats[PID].bWaitingForLand = true;
-        }
-    }
-    Super.Mutate(MutateString, Sender);
+		AttemptDodge(Sender.Pawn, Sender);
+	}
+	Super.Mutate(MutateString, Sender);
 }
 
 defaultproperties
 {
 	bAddToServerPackages=True
-    PostLandCooldown=0.5
-    GroupName="SingleDodge"
-    FriendlyName="Single Tap Dodge"
+	GroupName="SingleDodge"
+	FriendlyName="Single Tap Dodge"
 }
