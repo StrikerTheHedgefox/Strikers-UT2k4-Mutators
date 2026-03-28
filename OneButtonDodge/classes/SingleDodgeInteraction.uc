@@ -1,6 +1,7 @@
 class SingleDodgeInteraction extends Interaction;
 
 var float FrictionScale; // e.g., 0.5 for half speed
+var float LandTime;
 
 function Initialize()
 {
@@ -26,7 +27,7 @@ exec function DoDodge()
 	if (PC == None || PC.Pawn == None)
 		return;
 	
-	if (PC.DoubleClickDir == DCLICK_Active || PC.DoubleClickDir == DCLICK_Done)
+	if (PC.Level.TimeSeconds - LandTime < class'MutSingleTapDodge'.default.PostLandCooldown)
 		return;
 	
 	// Predict locally
@@ -38,11 +39,16 @@ exec function DoDodge()
 
 function Tick(float DeltaTime)
 {
-	/*
 	local PlayerController PC;
 	
 	PC = ViewportOwner.Actor;
-	*/
+	if(PC == None)
+		return;
+	
+	if (PC.DoubleClickDir == DCLICK_Done)
+    {	
+        LandTime = PC.Level.TimeSeconds;
+    }
 }
 
 /*

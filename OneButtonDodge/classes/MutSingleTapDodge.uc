@@ -1,6 +1,12 @@
 class MutSingleTapDodge extends Mutator;
 
 var bool bHasInteraction;
+var config float PostLandCooldown;
+
+struct PlayerStatus {
+    var float LandTime;
+};
+var array<PlayerStatus> Stats;
 
 function PostBeginPlay()
 {
@@ -18,7 +24,6 @@ function PostBeginPlay()
 
 function Tick(float DeltaTime)
 {
-	/*
 	local Controller C;
 	local int PID;
 
@@ -26,8 +31,16 @@ function Tick(float DeltaTime)
 	{
 		if (C.Pawn == None || PlayerController(C) == None)
 			continue;
+		
+		PID = C.PlayerReplicationInfo.PlayerID;
+        if (Stats.Length <= PID)
+			Stats.Length = PID + 1;
+		
+		if (PlayerController(C).DoubleClickDir == DCLICK_Done)
+        {	
+            Stats[PID].LandTime = Level.TimeSeconds;
+        }
 	}
-	*/
 }
 
 static function bool AttemptDodge(Pawn P, Controller C)
@@ -37,6 +50,7 @@ static function bool AttemptDodge(Pawn P, Controller C)
 	local float FDot, SDot;
 	local eDoubleClickDir ClickDir;
 	local bool DidDodge;
+	local PlayerController PC;
 
 	if (P == None || C == None)
 		return false;
@@ -45,6 +59,10 @@ static function bool AttemptDodge(Pawn P, Controller C)
 		return false;
 	
 	if (VSize(P.Acceleration) < 0.1)
+		return false;
+	
+	PC = PlayerController(C);
+	if (PC.DoubleClickDir == DCLICK_Active || PC.DoubleClickDir == DCLICK_Done)
 		return false;
 
 	if (P.Physics == PHYS_Falling)
@@ -76,18 +94,23 @@ static function bool AttemptDodge(Pawn P, Controller C)
 
 	DidDodge = xPawn(P).PerformDodge(ClickDir, DodgeDir, DirCross);
 	if(DidDodge)
-		PlayerController(C).DoubleClickDir = DCLICK_Active;
+		PC.DoubleClickDir = DCLICK_Active;
 	
 	return DidDodge; 
 }
 
 function Mutate(string MutateString, PlayerController Sender)
 {
+	local int PID;
 	if (MutateString ~= "dodge" && Sender != None && Sender.Pawn != None)
 	{
-		if (Sender.DoubleClickDir == DCLICK_Active || Sender.DoubleClickDir == DCLICK_Done)
+		PID = Sender.PlayerReplicationInfo.PlayerID;
+        if (Stats.Length <= PID)
+			Stats.Length = PID + 1;
+		
+		if (Level.TimeSeconds - Stats[PID].LandTime < PostLandCooldown)
 			return;
-
+	
 		AttemptDodge(Sender.Pawn, Sender);
 	}
 	Super.Mutate(MutateString, Sender);
@@ -98,4 +121,5 @@ defaultproperties
 	bAddToServerPackages=True
 	GroupName="SingleDodge"
 	FriendlyName="Single Tap Dodge"
+	PostLandCooldown=0.25
 }
