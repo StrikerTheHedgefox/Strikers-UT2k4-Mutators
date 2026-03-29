@@ -1,4 +1,5 @@
-class MutSingleTapDodge extends Mutator;
+class MutSingleTapDodge extends Mutator
+	config;
 
 var bool bHasInteraction;
 var config float PostLandCooldown;
@@ -19,7 +20,7 @@ function PostBeginPlay()
 		return;
 		
 	Spawn(class'InteractionHooker');
-
+	SaveConfig();
 }
 
 function Tick(float DeltaTime)
@@ -121,5 +122,5 @@ defaultproperties
 	bAddToServerPackages=True
 	GroupName="SingleDodge"
 	FriendlyName="Single Tap Dodge"
-	PostLandCooldown=0.25
+	PostLandCooldown=0.35
 }
