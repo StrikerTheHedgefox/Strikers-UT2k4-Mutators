@@ -26,6 +26,68 @@ var() config array<string> LoadMutator;
 var() config array<MapMutatorStruct> MapMutators;
 var() config bool bIsInitialized;
 
+function ServerTraveling(string URL, bool bItems)
+{
+	if (InStr(Level.NextURL, "SMPackageManager.PackageManager") != -1)
+	{
+		// Do nada
+	}
+	else
+	{		
+		if (InStr(Level.NextURL, "?Mutator=") == -1)
+		{
+			Level.NextURL = Level.NextURL $ "?Mutator=SMPackageManager.PackageManager";
+		}
+		else
+		{
+			Level.NextURL = Repl(Level.NextURL, "?Mutator=", "?Mutator=SMPackageManager.PackageManager,", false);
+		}
+	}
+	
+	log("Next URL: " $ Level.NextURL);
+	
+	if(NextMutator != None)
+        NextMutator.ServerTraveling(Level.NextURL, bItems);
+}
+
+function CheckAndAddPackagesForMutator(Mutator M)
+{
+	local int i;
+	local int CommaPos;
+	local string RawString, CurrentItem;
+	
+	// Check if it's the specific mutator by its class name	
+	for (i = 0; i < MutPackages.Length; i++)
+	{
+		if (InStr(string(M.Class), MutPackages[i].Mutator) != -1)
+		{		
+			RawString = MutPackages[i].ServerPackages;
+			while (RawString != "")
+			{
+				CommaPos = InStr(RawString, ",");
+				
+				if (CommaPos != -1)
+				{
+					CurrentItem = Left(RawString, CommaPos);
+					RawString = Mid(RawString, CommaPos + 1); // Move past the comma
+				}
+				else
+				{
+					// Last item
+					CurrentItem = RawString;
+					RawString = "";
+				}
+				
+				// Add it to the package map.
+				Log("Adding " $ CurrentItem $ " to package map for active mutator: " $ string(M.Class));
+				AddToPackageMap(CurrentItem);
+			}
+			
+			break;
+		}
+	}
+}
+
 function PreBeginPlay()
 {
 	local MutatorPackagesStruct MutP;
@@ -35,6 +97,8 @@ function PreBeginPlay()
 	local int i;
 	local int CommaPos;
 	local string RawString, CurrentItem, MapName;
+	
+	Super.PreBeginPlay();
 	
 	if (!bIsInitialized)
     {
@@ -121,8 +185,6 @@ function PreBeginPlay()
 			}
 		}
 	}
-	
-	Super.PreBeginPlay();
 }
 
 function PostBeginPlay()
@@ -131,6 +193,8 @@ function PostBeginPlay()
 	local int i;
 	local int CommaPos;
 	local string RawString, CurrentItem;
+	
+	Super.PostBeginPlay();
 	
 	// Map Music
     AddToPackageMap(Level.Song$".ogg");
@@ -147,8 +211,6 @@ function PostBeginPlay()
 	{	
 		if (InStr(Level.Game.Class.Name, GamePackages[i].GameType) != -1)
 		{
-			Log("Entry " $ i $ ":" $ GamePackages[i].GameType $ ", " $ GamePackages[i].ServerPackages);
-			
 			RawString = GamePackages[i].ServerPackages;
 			while (RawString != "")
 			{
@@ -178,43 +240,18 @@ function PostBeginPlay()
 	// Mutator Packages
 	for (M = Level.Game.BaseMutator; M != None; M = M.NextMutator)
     {
-        // Check if it's the specific mutator by its class name	
-		for (i = 0; i < MutPackages.Length; i++)
-		{
-			if (InStr(string(M.Class), MutPackages[i].Mutator) != -1)
-			{
-				Log("Entry " $ i $ ":" $ MutPackages[i].Mutator $ MutPackages[i].ServerPackages);
-				
-				RawString = MutPackages[i].ServerPackages;
-				while (RawString != "")
-				{
-					CommaPos = InStr(RawString, ",");
-					
-					if (CommaPos != -1)
-					{
-						CurrentItem = Left(RawString, CommaPos);
-						RawString = Mid(RawString, CommaPos + 1); // Move past the comma
-					}
-					else
-					{
-						// Last item
-						CurrentItem = RawString;
-						RawString = "";
-					}
-					
-					// Add it to the package map.
-					Log("Adding to package map for active mutator: " $ CurrentItem);
-					AddToPackageMap(CurrentItem);
-				}
-				
-				break;
-			}
-		}
+        CheckAndAddPackagesForMutator(M);
     }
-	
-	Super.PostBeginPlay();
-	
-    Destroy();
+}
+
+function AddMutator(Mutator M)
+{
+	if ( NextMutator == None )
+		NextMutator = M;
+	else
+		NextMutator.AddMutator(M);
+		
+	CheckAndAddPackagesForMutator(M);
 }
 
 /*

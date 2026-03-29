@@ -8,6 +8,6 @@ They are as follows:
 * ***OneButtonDodge*** - A mutator that adds Unreal Tournament 4(RIP)-Style single-button dodging. Must bind a key to the DoDodge command.
 * ***ServerLogo4b_SM*** - A widescreen-friendly version of Wormbo's ServerLogo4a.
 * ***SMHitMarkers*** - CoD/Apex Legends-style hitmarkers.
-* ***SMPackageManager*** - A mutator and serverpackage manager meant to be a replacement to UT2Vote's package and mutator management. Sets default-loaded mutators, and what serverpackages to add to the package list based on what's currently loaded. Must be added as a ServerActor.
+* ***SMPackageManager*** - A mutator and serverpackage manager meant to be a replacement to UT2Vote's package and mutator management. Sets default-loaded mutators, per-map mutators, and what serverpackages to add to the package list based on what's currently loaded. Must be added as a command line mutator. Persists between maps.
 * ***cDOM2*** - Brian "Snake.PLiSKiN" Alexander's Classic Domination 2 mod, fixed up for OldUnreal UT2004 3374p9.
 * ***ClassicDom*** - A heavily cut-down dependency for cDOM2.
