@@ -3,7 +3,6 @@ This repository contains a set of mutators currently being worked on by StrikerT
 
 They are as follows:
 * ***ChaosUT2Interactions*** - A mutator that adds a tab for ChaosUT2: Evolution's various keybinds, letting players select their binds without needing a copy of the mod locally. Based on BWInteractions.
-* ***foxWSFix*** - A super cut-down version of foxWSFix that is compatible with OldUnreal UT2004 3374p9.
 * ***MinPlayersFixer*** - A mutator that automatically sets the minimum player count based on the map on dedicated servers, so big maps can be properly populated. The minimum player count algorithm is configurable.
 * ***OneButtonDodge*** - A mutator that adds Unreal Tournament 4(RIP)-Style single-button dodging. Must bind a key to the DoDodge command.
 * ***ServerLogo4b_SM*** - A widescreen-friendly version of Wormbo's ServerLogo4a.
