@@ -1,6 +1,5 @@
 class SingleDodgeInteraction extends Interaction;
 
-var float FrictionScale; // e.g., 0.5 for half speed
 var float LandTime;
 
 function Initialize()
@@ -52,6 +51,9 @@ function Tick(float DeltaTime)
 }
 
 /*
+// Old attempt at controller target friction... keeping here so I don't forget.
+var float FrictionScale; // From an old attempt at controller target friction... keeping here so I don't forget.
+
 function bool KeyEvent(out EInputKey Key, out EInputAction Action, float Delta)
 {
 	local PlayerController PC;
@@ -92,7 +94,7 @@ function bool KeyEvent(out EInputKey Key, out EInputAction Action, float Delta)
 
 defaultproperties
 {
-	FrictionScale = 0.5
+	//FrictionScale = 0.5
 	bRequiresTick = True
 	bActive = True
 	bVisible = True
