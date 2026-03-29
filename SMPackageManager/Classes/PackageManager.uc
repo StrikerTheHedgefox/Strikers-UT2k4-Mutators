@@ -13,22 +13,28 @@ struct GameTypePackagesStruct
     var() config string ServerPackages;
 };
 
+struct MapMutatorStruct
+{
+    var() config string Map;
+    var() config string Mutators;
+};
+
 var() config array<MutatorPackagesStruct> MutPackages;
 var() config array<GameTypePackagesStruct> GamePackages;
 var() config array<string> ServerPackage;
 var() config array<string> LoadMutator;
+var() config array<MapMutatorStruct> MapMutators;
 var() config bool bIsInitialized;
 
-function PostBeginPlay()
+function PreBeginPlay()
 {
-	local Mutator M;
-	local int i;
-	local int CommaPos;
-	local string RawString, CurrentItem;
 	local MutatorPackagesStruct MutP;
 	local GameTypePackagesStruct GameTypeP;
+	local MapMutatorStruct MapMutP;
 	
-	Super.PostBeginPlay();
+	local int i;
+	local int CommaPos;
+	local string RawString, CurrentItem, MapName;
 	
 	if (!bIsInitialized)
     {
@@ -67,6 +73,10 @@ function PostBeginPlay()
 		LoadMutator[0]="SMHitMarkers.DamageMarker";
 		LoadMutator[1]="UT2k4ScoreRecovery_v3.MutUT2k4ScoreRecovery_v3";
 		LoadMutator[2]="ServerLogo4b_SM.MutServerLogo";
+		
+		MapMutP.Map="DM-KeggerParty";
+		MapMutP.Mutators="XGame.MutQuadJump,UnrealGame.MutLowGrav";
+		MapMutators[0] = MapMutP;
 	
         bIsInitialized = true;
 		
@@ -80,6 +90,47 @@ function PostBeginPlay()
 		Log("Loading Mutator: " $ LoadMutator[i]);
 		Level.Game.AddMutator(LoadMutator[i], true);
 	}
+	
+	// Per-Map Mutators
+	MapName = string(Outer);
+	log("Current Map Filename: " @ MapName);
+	for (i = 0; i < MapMutators.Length; i++)
+	{
+		if (InStr(MapName, MapMutators[i].Map) != -1)
+		{
+			RawString = MapMutators[i].Mutators;
+			while (RawString != "")
+			{
+				CommaPos = InStr(RawString, ",");
+				
+				if (CommaPos != -1)
+				{
+					CurrentItem = Left(RawString, CommaPos);
+					RawString = Mid(RawString, CommaPos + 1); // Move past the comma
+				}
+				else
+				{
+					// Last item
+					CurrentItem = RawString;
+					RawString = "";
+				}
+				
+				// Load the sombitch
+				Log("Loading Per-Map Mutator: " $ CurrentItem);
+				Level.Game.AddMutator(CurrentItem, true);
+			}
+		}
+	}
+	
+	Super.PreBeginPlay();
+}
+
+function PostBeginPlay()
+{
+	local Mutator M;
+	local int i;
+	local int CommaPos;
+	local string RawString, CurrentItem;
 	
 	// Map Music
     AddToPackageMap(Level.Song$".ogg");
@@ -96,7 +147,7 @@ function PostBeginPlay()
 	{	
 		if (InStr(Level.Game.Class.Name, GamePackages[i].GameType) != -1)
 		{
-			Log("Entry" $ i $ ":" $ GamePackages[i].GameType $ ", " $ GamePackages[i].ServerPackages);
+			Log("Entry " $ i $ ":" $ GamePackages[i].GameType $ ", " $ GamePackages[i].ServerPackages);
 			
 			RawString = GamePackages[i].ServerPackages;
 			while (RawString != "")
@@ -115,7 +166,7 @@ function PostBeginPlay()
 					RawString = "";
 				}
 				
-				// Process CurrentItem here
+				// Add it to the package map
 				Log("Adding to package map for active gametype: " $ CurrentItem);
 				AddToPackageMap(CurrentItem);
 			}
@@ -132,7 +183,7 @@ function PostBeginPlay()
 		{
 			if (InStr(string(M.Class), MutPackages[i].Mutator) != -1)
 			{
-				Log("Entry" $ i $ ":" $ MutPackages[i].Mutator $ MutPackages[i].ServerPackages);
+				Log("Entry " $ i $ ":" $ MutPackages[i].Mutator $ MutPackages[i].ServerPackages);
 				
 				RawString = MutPackages[i].ServerPackages;
 				while (RawString != "")
@@ -151,7 +202,7 @@ function PostBeginPlay()
 						RawString = "";
 					}
 					
-					// Process CurrentItem here
+					// Add it to the package map.
 					Log("Adding to package map for active mutator: " $ CurrentItem);
 					AddToPackageMap(CurrentItem);
 				}
@@ -160,6 +211,8 @@ function PostBeginPlay()
 			}
 		}
     }
+	
+	Super.PostBeginPlay();
 	
     Destroy();
 }
