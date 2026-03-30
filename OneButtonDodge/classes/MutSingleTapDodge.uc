@@ -5,9 +5,15 @@ var bool bHasInteraction;
 var config float PostLandCooldown;
 
 struct PlayerStatus {
-    var float LandTime;
+	var float LandTime;
 };
 var array<PlayerStatus> Stats;
+
+replication
+{
+	reliable if (Role == ROLE_Authority)
+		PostLandCooldown;
+}
 
 function PostBeginPlay()
 {
@@ -34,13 +40,13 @@ function Tick(float DeltaTime)
 			continue;
 		
 		PID = C.PlayerReplicationInfo.PlayerID;
-        if (Stats.Length <= PID)
+		if (Stats.Length <= PID)
 			Stats.Length = PID + 1;
 		
 		if (PlayerController(C).DoubleClickDir == DCLICK_Done)
-        {	
-            Stats[PID].LandTime = Level.TimeSeconds;
-        }
+		{	
+			Stats[PID].LandTime = Level.TimeSeconds;
+		}
 	}
 }
 
@@ -106,7 +112,7 @@ function Mutate(string MutateString, PlayerController Sender)
 	if (MutateString ~= "dodge" && Sender != None && Sender.Pawn != None)
 	{
 		PID = Sender.PlayerReplicationInfo.PlayerID;
-        if (Stats.Length <= PID)
+		if (Stats.Length <= PID)
 			Stats.Length = PID + 1;
 		
 		if (Level.TimeSeconds - Stats[PID].LandTime < PostLandCooldown)
