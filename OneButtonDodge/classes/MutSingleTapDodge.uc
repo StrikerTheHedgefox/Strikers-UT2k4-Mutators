@@ -122,5 +122,5 @@ defaultproperties
 	bAddToServerPackages=True
 	GroupName="SingleDodge"
 	FriendlyName="Single Tap Dodge"
-	PostLandCooldown=0.35
+	PostLandCooldown=0.15
 }
