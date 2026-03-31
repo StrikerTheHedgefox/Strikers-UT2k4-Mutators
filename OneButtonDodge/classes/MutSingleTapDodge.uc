@@ -15,7 +15,7 @@ function bool CheckReplacement( Actor Other, out byte bSuperRelevant )
 	if (PC != None && FindReplicationActor(PC) == None)
 	{
 		Spawn(class'InteractionHooker', PC);
-		Log("Spawning replicator for player.");
+		//Log("Spawning replicator for player.");
 	}
 
 	return Super.CheckReplacement(Other, bSuperRelevant);
