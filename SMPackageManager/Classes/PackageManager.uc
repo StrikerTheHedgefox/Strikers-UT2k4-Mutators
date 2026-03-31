@@ -25,6 +25,8 @@ var() config array<string> ServerPackage;
 var() config array<string> LoadMutator;
 var() config array<MapMutatorStruct> MapMutators;
 var() config bool bIsInitialized;
+var bool bMutsLoaded;
+var bool bPackagesAdded;
 
 function ServerTraveling(string URL, bool bItems)
 {
@@ -148,42 +150,47 @@ function PreBeginPlay()
         Log("SMServerPackages: Initialized and Saved INI");
     }
 	
-	// Mutator loading
-	for (i = 0; i < LoadMutator.Length; i++)
+	if(!default.bMutsLoaded)
 	{
-		Log("Loading Mutator: " $ LoadMutator[i]);
-		Level.Game.AddMutator(LoadMutator[i], true);
-	}
-	
-	// Per-Map Mutators
-	MapName = string(Outer);
-	log("Current Map Filename: " @ MapName);
-	for (i = 0; i < MapMutators.Length; i++)
-	{
-		if (InStr(MapName, MapMutators[i].Map) != -1)
+		// Mutator loading
+		for (i = 0; i < LoadMutator.Length; i++)
 		{
-			RawString = MapMutators[i].Mutators;
-			while (RawString != "")
+			Log("Loading Mutator: " $ LoadMutator[i]);
+			Level.Game.AddMutator(LoadMutator[i], true);
+		}
+		
+		// Per-Map Mutators
+		MapName = string(Outer);
+		log("Current Map Filename: " @ MapName);
+		for (i = 0; i < MapMutators.Length; i++)
+		{
+			if (InStr(MapName, MapMutators[i].Map) != -1)
 			{
-				CommaPos = InStr(RawString, ",");
-				
-				if (CommaPos != -1)
+				RawString = MapMutators[i].Mutators;
+				while (RawString != "")
 				{
-					CurrentItem = Left(RawString, CommaPos);
-					RawString = Mid(RawString, CommaPos + 1); // Move past the comma
+					CommaPos = InStr(RawString, ",");
+					
+					if (CommaPos != -1)
+					{
+						CurrentItem = Left(RawString, CommaPos);
+						RawString = Mid(RawString, CommaPos + 1); // Move past the comma
+					}
+					else
+					{
+						// Last item
+						CurrentItem = RawString;
+						RawString = "";
+					}
+					
+					// Load the sombitch
+					Log("Loading Per-Map Mutator: " $ CurrentItem);
+					Level.Game.AddMutator(CurrentItem, true);
 				}
-				else
-				{
-					// Last item
-					CurrentItem = RawString;
-					RawString = "";
-				}
-				
-				// Load the sombitch
-				Log("Loading Per-Map Mutator: " $ CurrentItem);
-				Level.Game.AddMutator(CurrentItem, true);
 			}
 		}
+		
+		default.bMutsLoaded = true;
 	}
 }
 
@@ -196,52 +203,57 @@ function PostBeginPlay()
 	
 	Super.PostBeginPlay();
 	
-	// Map Music
-    AddToPackageMap(Level.Song$".ogg");
-	
-	// Individual Packages
-	for (i = 0; i < ServerPackage.Length; i++)
+	if(!default.bPackagesAdded)
 	{
-		Log("Adding to package map: " $ ServerPackage[i]);
-		AddToPackageMap(ServerPackage[i]);
-	}
-	
-	// GameType Packages
-	for (i = 0; i < GamePackages.Length; i++)
-	{	
-		if (InStr(Level.Game.Class.Name, GamePackages[i].GameType) != -1)
+		// Map Music
+		AddToPackageMap(Level.Song$".ogg");
+		
+		// Individual Packages
+		for (i = 0; i < ServerPackage.Length; i++)
 		{
-			RawString = GamePackages[i].ServerPackages;
-			while (RawString != "")
-			{
-				CommaPos = InStr(RawString, ",");
-				
-				if (CommaPos != -1)
-				{
-					CurrentItem = Left(RawString, CommaPos);
-					RawString = Mid(RawString, CommaPos + 1); // Move past the comma
-				}
-				else
-				{
-					// Last item
-					CurrentItem = RawString;
-					RawString = "";
-				}
-				
-				// Add it to the package map
-				Log("Adding to package map for active gametype: " $ CurrentItem);
-				AddToPackageMap(CurrentItem);
-			}
-			
-			break;
+			Log("Adding to package map: " $ ServerPackage[i]);
+			AddToPackageMap(ServerPackage[i]);
 		}
+		
+		// GameType Packages
+		for (i = 0; i < GamePackages.Length; i++)
+		{	
+			if (InStr(Level.Game.Class.Name, GamePackages[i].GameType) != -1)
+			{
+				RawString = GamePackages[i].ServerPackages;
+				while (RawString != "")
+				{
+					CommaPos = InStr(RawString, ",");
+					
+					if (CommaPos != -1)
+					{
+						CurrentItem = Left(RawString, CommaPos);
+						RawString = Mid(RawString, CommaPos + 1); // Move past the comma
+					}
+					else
+					{
+						// Last item
+						CurrentItem = RawString;
+						RawString = "";
+					}
+					
+					// Add it to the package map
+					Log("Adding to package map for active gametype: " $ CurrentItem);
+					AddToPackageMap(CurrentItem);
+				}
+				
+				break;
+			}
+		}
+		
+		// Mutator Packages
+		for (M = Level.Game.BaseMutator; M != None; M = M.NextMutator)
+		{
+			CheckAndAddPackagesForMutator(M);
+		}
+		
+		default.bPackagesAdded = true;
 	}
-	
-	// Mutator Packages
-	for (M = Level.Game.BaseMutator; M != None; M = M.NextMutator)
-    {
-        CheckAndAddPackagesForMutator(M);
-    }
 }
 
 function AddMutator(Mutator M)
