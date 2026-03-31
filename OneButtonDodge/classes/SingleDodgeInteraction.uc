@@ -1,6 +1,6 @@
 class SingleDodgeInteraction extends Interaction;
 
-var float LandTime;
+var InteractionHooker IH;
 
 function Initialize()
 {
@@ -26,29 +26,17 @@ exec function DoDodge()
 	if (PC == None || PC.Pawn == None)
 		return;
 	
-	if (PC.Level.TimeSeconds - LandTime < class'MutSingleTapDodge'.default.PostLandCooldown)
-		return;
-	
-	// Predict locally
-	if (class'MutSingleTapDodge'.static.AttemptDodge(PC.Pawn, PC))
+	if(IH == None)
 	{
-		PC.ConsoleCommand("mutate dodge");
+		PC.ClientMessage("InteractionHook is none! You should not be seeing this.");
 	}
+		
+	IH.TriggerDodge();
 }
 
-function Tick(float DeltaTime)
-{
-	local PlayerController PC;
-	
-	PC = ViewportOwner.Actor;
-	if(PC == None)
-		return;
-	
-	if (PC.DoubleClickDir == DCLICK_Done)
-    {	
-        LandTime = PC.Level.TimeSeconds;
-    }
-}
+//function Tick(float DeltaTime)
+//{
+//}
 
 /*
 // Old attempt at controller target friction... keeping here so I don't forget.
@@ -95,7 +83,7 @@ function bool KeyEvent(out EInputKey Key, out EInputAction Action, float Delta)
 defaultproperties
 {
 	//FrictionScale = 0.5
-	bRequiresTick = True
+	//bRequiresTick = True
 	bActive = True
 	bVisible = True
 }
