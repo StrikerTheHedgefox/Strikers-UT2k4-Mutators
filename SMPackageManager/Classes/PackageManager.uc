@@ -30,26 +30,24 @@ var bool bPackagesAdded;
 
 function ServerTraveling(string URL, bool bItems)
 {
-	if (InStr(Level.NextURL, "SMPackageManager.PackageManager") != -1)
+	default.bMutsLoaded = false;
+	default.bPackagesAdded = false;
+	
+	if (InStr(URL, "SMPackageManager.PackageManager") != -1)
 	{
 		// Do nada
 	}
 	else
 	{		
-		if (InStr(Level.NextURL, "?Mutator=") == -1)
-		{
-			Level.NextURL = Level.NextURL $ "?Mutator=SMPackageManager.PackageManager";
-		}
-		else
-		{
-			Level.NextURL = Repl(Level.NextURL, "?Mutator=", "?Mutator=SMPackageManager.PackageManager,", false);
-		}
+		if(InStr(URL, "?Mutator=") != -1)
+			URL = Repl(URL, "?Mutator=", "?Mutator=SMPackageManager.PackageManager,", false);
 	}
 	
+	Level.NextURL = URL;
 	log("Next URL: " $ Level.NextURL);
 	
 	if(NextMutator != None)
-        NextMutator.ServerTraveling(Level.NextURL, bItems);
+        NextMutator.ServerTraveling(URL, bItems);
 }
 
 function CheckAndAddPackagesForMutator(Mutator M)
