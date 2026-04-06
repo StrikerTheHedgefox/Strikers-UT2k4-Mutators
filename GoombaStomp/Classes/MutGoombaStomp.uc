@@ -1,22 +1,30 @@
 class MutGoombaStomp extends Mutator;
 
-function ModifyPlayer(Pawn Other)
+function bool CheckReplacement( Actor Other, out byte bSuperRelevant )
 {
-    local GoombaStompTracker T;
+	local PlayerController PC;
+	PC = PlayerController(Other);
+	
+	if (PC != None && FindReplicationActor(PC) == None)
+	{
+		Spawn(class'GoombaStompTracker', PC);
+		//Log("Spawning replicator for player.");
+	}
 
-    Super.ModifyPlayer(Other);
+	return Super.CheckReplacement(Other, bSuperRelevant);
+}
 
-    if (Other == None)
-        return;
+function GoombaStompTracker FindReplicationActor(PlayerController PC)
+{
+	local GoombaStompTracker GST;
 
-    // Spawn tracker and attach to player
-    T = Spawn(class'GoombaStompTracker', Other);
-    if (T != None)
-    {
-        T.SetOwner(Other);
-        T.SetBase(Other);
-        T.OwnerPawn = Other;
-    }
+	foreach DynamicActors(class'GoombaStompTracker', GST)
+	{
+		if (GST.Owner == PC)
+			return GST;
+	}
+
+	return None;
 }
 
 defaultproperties

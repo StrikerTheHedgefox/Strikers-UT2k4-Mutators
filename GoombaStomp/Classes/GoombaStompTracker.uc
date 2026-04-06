@@ -2,138 +2,177 @@ class GoombaStompTracker extends Actor;
 
 #exec AUDIO IMPORT FILE="Stomp.wav" NAME="Stomp" GROUP="Sounds"
 
-var Pawn OwnerPawn;
+var bool bReceivedVars;
 
-// Tunables
 var float TraceDistance;
 var float MinDownwardVelocity;
 var float StompHeightThreshold;
+var int   TraceResolution;    // number of traces around circumference
 
-// Sound
 var sound StompSound;
 
 replication
 {
     reliable if (Role < ROLE_Authority)
-        ServerDoStomp;
+        DoStomp;
+    //reliable if (Role == ROLE_Authority)
+        //PlayStompSound;
 }
 
-simulated function PostBeginPlay()
+simulated function PostNetBeginPlay()
 {
-    Super.PostBeginPlay();
-
-    SetTimer(0.0, true); // ensures Tick runs
+	bReceivedVars = True;
+	Enable('Tick');
 }
 
-simulated event Tick(float DeltaTime)
-{
-    local vector Start, End, HitLocation, HitNormal;
+simulated function Tick(float DeltaTime)
+{	
+	local vector Start, End, HitLocation, HitNormal, Offset;
     local Actor HitActor;
     local Pawn Victim;
+    local int i;
+    local float AngleRad;
+	
+	local PlayerController PC;
 
-    if (OwnerPawn == None)
+	// Purge if player disconnected.
+	if (Role == ROLE_Authority && Owner == None)
+    {
+        Destroy();
+        return;
+    }	
+	
+	PC = PlayerController(Owner);
+
+    if (PC.Pawn == None)
         return;
 
-    // Only while falling
-    if (OwnerPawn.Velocity.Z > MinDownwardVelocity)
-        return;
+    if (PC.Pawn.Velocity.Z > MinDownwardVelocity)
+        return; // only falling
 
-    Start = OwnerPawn.Location;
+    // Main trace straight down
+    Start = PC.Pawn.Location;
     End   = Start - vect(0,0,1) * TraceDistance;
-
-    HitActor = Trace(HitLocation, HitNormal, End, Start, true);
-
+    HitActor = PC.Trace(HitLocation, HitNormal, End, Start, true);
     Victim = Pawn(HitActor);
-
-    if (Victim == None || Victim == OwnerPawn)
+    if (CheckStomp(Victim))
         return;
 
-    if (!IsValidPlayerPawn(Victim))
-        return;
+    // Extra traces around player circumference
+	for (i = 0; i < TraceResolution; i++)
+	{
+		AngleRad = (360.0 / TraceResolution) * i * (3.14159265/180); // convert to radians
 
-    if (!IsValidPlayerPawn(OwnerPawn))
+		Offset.X = cos(AngleRad) * PC.Pawn.CollisionRadius;
+		Offset.Y = sin(AngleRad) * PC.Pawn.CollisionRadius;
+		Offset.Z = 0.0;
+
+		Start = PC.Pawn.Location + Offset;
+		End   = Start - vect(0,0,1) * TraceDistance;
+
+		HitActor = PC.Trace(HitLocation, HitNormal, End, Start, true);
+		Victim = Pawn(HitActor);
+		if (CheckStomp(Victim))
+			return;
+	}
+}
+
+simulated function bool CheckStomp(Pawn Victim)
+{
+	local PlayerController PC;	
+	PC = PlayerController(Owner);
+	
+    if (Victim == None || Victim == PC.Pawn)
+        return false;
+	
+	if (Level.Game.bTeamGame)
+	{
+		if (PC.Pawn.GetTeamNum() == Victim.GetTeamNum())
+			return false;
+	}
+	
+	if(Victim.IsA('Vehicle'))
+		return false;
+
+    if ((PC.Pawn.Location.Z - Victim.Location.Z) < StompHeightThreshold)
+        return false;
+		
+	if (Victim.Health <= 0)
+        return false;
+	
+	TriggerStomp(Victim);
+	
+    return true;
+}
+
+simulated function StompLogic(Pawn Victim)
+{
+	local PlayerController PC;
+	PC = PlayerController(Owner);
+	
+    if (Victim == None || PC.Pawn == None)
         return;
 		
-	if (OwnerPawn.Team == Victim.Team)
-        return;
+    if (StompSound != None && PC.Pawn != None)
+        PC.Pawn.PlaySound(StompSound, SLOT_Interact, 1.0, false, 1000);
 
-    // Height check
-    if ((OwnerPawn.Location.Z - Victim.Location.Z) < StompHeightThreshold)
-        return;
-
-    // CLIENT-SIDE prediction
-    if (Role < ROLE_Authority)
-    {
-        PlayStompEffects();
-        ServerDoStomp(Victim);
-    }
-    else
-    {
-        DoStomp(Victim);
-    }
-}
-
-function bool IsValidPlayerPawn(Pawn P)
-{
-    return (P != None && P.Controller != None && P.Controller.bIsPlayer);
-}
-
-function ServerDoStomp(Pawn Victim)
-{
-    DoStomp(Victim);
-}
-
-function DoStomp(Pawn Victim)
-{
-    if (Victim == None || OwnerPawn == None)
-        return;
-
-    if (Victim.Health <= 0)
-        return;
-
-    // Server-side validation (IMPORTANT)
-    if ((OwnerPawn.Location.Z - Victim.Location.Z) < StompHeightThreshold)
-        return;
-
-    if (OwnerPawn.Velocity.Z > MinDownwardVelocity)
-        return;
+	if(Role == ROLE_Authority)
+	{
+		Victim.TakeDamage(
+			1000,
+			PC.Pawn,
+			Victim.Location,
+			vect(0,0,0),
+			class'DamTypeGoombaStomp'
+		);
+	}
 		
-	if (OwnerPawn.Team == Victim.Team)
-        return;
-
-    // Effects (server will replicate sound to others)
-    PlayStompEffects();
-
-    // Kill victim
-    Victim.TakeDamage(
-        1000,
-        OwnerPawn,
-        Victim.Location,
-        vect(0,0,0),
-        class'DamTypeGoombaStomp'
-    );
-
-    // Bounce
-    OwnerPawn.Velocity.Z = 400;
+	PC.Pawn.Velocity.Z = 600;
 }
 
-simulated function PlayStompEffects()
+simulated function DoStomp(Pawn Victim)
 {
-    if (StompSound != None && OwnerPawn != None)
-    {
-        OwnerPawn.PlaySound(StompSound, SLOT_Interact, 1.0,, 1000);
-    }
+	if(Role == ROLE_Authority)
+		StompLogic(Victim);
+}
+
+// Proxy function so we can predict the stomp logic.
+simulated function TriggerStomp(Pawn Victim)
+{
+	local PlayerController PC;
+	PC = PlayerController(Owner);
+	if(PC.Pawn == None)
+		return;
+	
+	if(PC.Level.NetMode != NM_DedicatedServer)
+	{
+		StompLogic(Victim);
+		DoStomp(Victim);
+	}
+	else
+	{
+		if(PC.Pawn.IsA('Bot'))
+		{
+			StompLogic(Victim);
+		}
+	}
 }
 
 defaultproperties
 {
-    bHidden=true
-    bAlwaysTick=true
-    RemoteRole=ROLE_SimulatedProxy
-
-    TraceDistance=60.0
+    bReceivedVars=False
+	bHidden=True
+	bOnlyRelevantToOwner=False
+	bAlwaysRelevant=False
+	bOnlyDirtyReplication=False
+	bSkipActorPropertyReplication=False
+	NetUpdateFrequency=100
+	RemoteRole=ROLE_SimulatedProxy
+	
+	TraceDistance=60.0
+	TraceResolution=8
     StompHeightThreshold=40.0
-    MinDownwardVelocity=-150.0
+    MinDownwardVelocity=-200.0
 
     StompSound=Sound'Sounds.Stomp'
 }
