@@ -3,11 +3,14 @@ class MutGoombaStomp extends Mutator;
 function bool CheckReplacement( Actor Other, out byte bSuperRelevant )
 {
 	local PlayerController PC;
+	local Actor GSTActor;
 	PC = PlayerController(Other);
 	
 	if (PC != None && FindReplicationActor(PC) == None)
 	{
-		Spawn(class'GoombaStompTracker', PC);
+		GSTActor = Spawn(class'GoombaStompTracker', PC);
+		GSTActor.SetBase(Other);
+		
 		//Log("Spawning replicator for player.");
 	}
 

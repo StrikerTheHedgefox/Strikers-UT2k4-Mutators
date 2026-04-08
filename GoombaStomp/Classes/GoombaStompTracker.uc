@@ -13,10 +13,8 @@ var sound StompSound;
 
 replication
 {
-    reliable if (Role < ROLE_Authority)
-        DoStomp;
-    //reliable if (Role == ROLE_Authority)
-        //PlayStompSound;
+	reliable if (Role < ROLE_Authority)
+		DoStomp;
 }
 
 simulated function PostNetBeginPlay()
@@ -28,37 +26,37 @@ simulated function PostNetBeginPlay()
 simulated function Tick(float DeltaTime)
 {	
 	local vector Start, End, HitLocation, HitNormal, Offset;
-    local Actor HitActor;
-    local Pawn Victim;
-    local int i;
-    local float AngleRad;
+	local Actor HitActor;
+	local Pawn Victim;
+	local int i;
+	local float AngleRad;
 	
 	local PlayerController PC;
 
 	// Purge if player disconnected.
 	if (Role == ROLE_Authority && Owner == None)
-    {
-        Destroy();
-        return;
-    }	
+	{
+		Destroy();
+		return;
+	}	
 	
 	PC = PlayerController(Owner);
 
-    if (PC.Pawn == None)
-        return;
+	if (PC.Pawn == None)
+		return;
 
-    if (PC.Pawn.Velocity.Z > MinDownwardVelocity)
-        return; // only falling
+	if (PC.Pawn.Velocity.Z > MinDownwardVelocity)
+		return; // only falling
 
-    // Main trace straight down
-    Start = PC.Pawn.Location;
-    End   = Start - vect(0,0,1) * TraceDistance;
-    HitActor = PC.Trace(HitLocation, HitNormal, End, Start, true);
-    Victim = Pawn(HitActor);
-    if (CheckStomp(Victim))
-        return;
+	// Main trace straight down
+	Start = PC.Pawn.Location;
+	End   = Start - vect(0,0,1) * TraceDistance;
+	HitActor = PC.Trace(HitLocation, HitNormal, End, Start, true);
+	Victim = Pawn(HitActor);
+	if (CheckStomp(Victim))
+		return;
 
-    // Extra traces around player circumference
+	// Extra traces around player circumference
 	for (i = 0; i < TraceResolution; i++)
 	{
 		AngleRad = (360.0 / TraceResolution) * i * (3.14159265/180); // convert to radians
@@ -82,8 +80,8 @@ simulated function bool CheckStomp(Pawn Victim)
 	local PlayerController PC;	
 	PC = PlayerController(Owner);
 	
-    if (Victim == None || Victim == PC.Pawn)
-        return false;
+	if (Victim == None || Victim == PC.Pawn)
+		return false;
 	
 	if (Level.Game.bTeamGame)
 	{
@@ -94,15 +92,15 @@ simulated function bool CheckStomp(Pawn Victim)
 	if(Victim.IsA('Vehicle'))
 		return false;
 
-    if ((PC.Pawn.Location.Z - Victim.Location.Z) < StompHeightThreshold)
-        return false;
+	if ((PC.Pawn.Location.Z - Victim.Location.Z) < StompHeightThreshold)
+		return false;
 		
 	if (Victim.Health <= 0)
-        return false;
+		return false;
 	
 	TriggerStomp(Victim);
 	
-    return true;
+	return true;
 }
 
 simulated function StompLogic(Pawn Victim)
@@ -110,11 +108,11 @@ simulated function StompLogic(Pawn Victim)
 	local PlayerController PC;
 	PC = PlayerController(Owner);
 	
-    if (Victim == None || PC.Pawn == None)
-        return;
-		
-    if (StompSound != None && PC.Pawn != None)
-        PC.Pawn.PlaySound(StompSound, SLOT_Interact, 1.0, false, 1000);
+	if (Victim == None || PC.Pawn == None)
+		return;
+	
+	if (StompSound != None && PC.Pawn != None)
+		PC.Pawn.PlayOwnedSound(StompSound, SLOT_None, 1.0, false, 300);
 
 	if(Role == ROLE_Authority)
 	{
@@ -160,7 +158,7 @@ simulated function TriggerStomp(Pawn Victim)
 
 defaultproperties
 {
-    bReceivedVars=False
+	bReceivedVars=False
 	bHidden=True
 	bOnlyRelevantToOwner=False
 	bAlwaysRelevant=False
@@ -171,8 +169,8 @@ defaultproperties
 	
 	TraceDistance=60.0
 	TraceResolution=8
-    StompHeightThreshold=40.0
-    MinDownwardVelocity=-200.0
+	StompHeightThreshold=40.0
+	MinDownwardVelocity=-200.0
 
-    StompSound=Sound'Sounds.Stomp'
+	StompSound=Sound'Sounds.Stomp'
 }
